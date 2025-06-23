@@ -1,13 +1,18 @@
-require "rack/proxy"
+require 'rack/proxy'
 
-class NextjsProxy < Rack::Proxy
+class NextjsAuthProxy < Rack::Proxy
   def perform_request(env)
-    request = Rack::Request.new(env)
+    req = Rack::Request.new(env)
 
-    if request.path.start_with?("/chat") || request.path.start_with?("/_next")
-      env["HTTP_HOST"] = "localhost:3001"
-      env["PATH_INFO"] = request.fullpath
-      env["HTTP_X_FORWARDED_HOST"] = "localhost:3000"
+    if req.path.start_with?("/chat") || req.path.start_with?("/_next")
+      session = env['rack.session']
+      if session[:user_id].blank?
+        return [302, { "Location" => "/login" }, []]
+      end
+
+      env["HTTP_HOST"] = "next:3001" # コンテナ名ベース
+      env["HTTP_X_FORWARDED_HOST"] = "rails:3000"
+      env["HTTP_X_FORWARDED_PROTO"] = "http"
       super(env)
     else
       @app.call(env)
@@ -15,4 +20,4 @@ class NextjsProxy < Rack::Proxy
   end
 end
 
-Rails.application.config.middleware.insert_before(0, NextjsProxy)
+Rails.application.config.middleware.insert_before 0, NextjsAuthProxy
