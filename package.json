@@ -2,8 +2,13 @@
   "private": true,
   "type": "module",
   "devDependencies": {
+    "@types/react": "^19.1.8",
+    "my-ui-library": "https://github.com/emi-yoshimatsu/my-ui-library/archive/refs/tags/v0.1.0.tar.gz",
     "vite": "^5.4.19",
-    "vite-plugin-ruby": "^5.1.1",
-   "my-ui-library": "https://github.com/emi-yoshimatsu/my-ui-library/archive/refs/tags/v0.1.0.tar.gz"
+    "vite-plugin-ruby": "^5.1.1"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.6.0",
+    "vite-plugin-full-reload": "^1.2.0"
   }
 }
